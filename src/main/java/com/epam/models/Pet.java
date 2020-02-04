@@ -3,17 +3,19 @@ package com.epam.models;
 import java.awt.*;
 
 public class Pet {
+    private Integer xCoord = 0;
+    private Integer yCoord = 0;
     private Integer hungriness;
     private Integer happiness;
-    private Image petPic;
+    private Image picture;
 
     public Pet() {
     }
 
-    public Pet(Image petPic) {
+    public Pet(Image picture) {
         this.hungriness = 10;
         this.happiness = 10;
-        this.petPic = petPic;
+        this.picture = picture;
     }
 
     public Pet(Integer hungriness, Integer happiness) {
@@ -37,11 +39,27 @@ public class Pet {
         this.happiness = happiness;
     }
 
-    public Image getPetPic() {
-        return petPic;
+    public Image getPicture() {
+        return picture;
     }
 
-    public void setPetPic(Image petPic) {
-        this.petPic = petPic;
+    public void setPicture(Image picture) {
+        this.picture = picture;
+    }
+
+    public Integer getxCoord() {
+        return xCoord;
+    }
+
+    public void setxCoord(Integer xCoord) {
+        this.xCoord = xCoord;
+    }
+
+    public Integer getyCoord() {
+        return yCoord;
+    }
+
+    public void setyCoord(Integer yCoord) {
+        this.yCoord = yCoord;
     }
 }
