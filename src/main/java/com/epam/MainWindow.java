@@ -9,7 +9,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(500, 320);
         setLocation(500, 200);
-        add(new GameBoard("dog.png"));
+        add(new GameBoard());
         setVisible(true);
         setResizable(false);
     }

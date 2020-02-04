@@ -9,7 +9,7 @@ public class GameField extends JPanel {
     private final int SIZE = 280;
     private final int DOT_SIZE = 28;
     private final int ALL_DOTS = 100;
-    
+
 
     private Pet pet = new Pet();
 
@@ -33,6 +33,11 @@ public class GameField extends JPanel {
     private void createPet() {
         pet.setxCoord((int) Math.sqrt((double) ALL_DOTS) / 2 * DOT_SIZE);
         pet.setyCoord((int) Math.sqrt((double) ALL_DOTS) / 2 * DOT_SIZE);
+    }
+
+    public void move() {
+        int petY = pet.getyCoord();
+        pet.setyCoord(petY - DOT_SIZE);
     }
 
     @Override

@@ -1,35 +1,19 @@
 package com.epam;
 
-import com.epam.models.Pet;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class GameBoard extends JPanel implements ActionListener {
+public class GameBoard extends JPanel {
     private Button createBtn;
+    private Button upBtn;
+    private GameField gameField;
+    private JPanel navigationPane;
 
     public GameBoard() {
         setBackground(Color.pink);
 
-        JPanel navigationPane = new JPanel();
-        navigationPane.setBackground(Color.pink);
-        navigationPane.setLayout(new BoxLayout(navigationPane, BoxLayout.PAGE_AXIS));
-
-        navigationPane.add(getMainButtonsPane());
-        navigationPane.add(Box.createRigidArea(new Dimension(0, 20)));
-        navigationPane.add(getNavigationButtonsPane());
-
-        add(new GameField(), BorderLayout.CENTER);
-        add(Box.createRigidArea(new Dimension(10, 0)));
-        add(navigationPane);
-
-        createBtn.addActionListener(this);
-    }
-
-    public GameBoard(String fileName) {
-        setBackground(Color.pink);
+        this.gameField = new GameField();
 
         JPanel navigationPane = new JPanel();
         navigationPane.setBackground(Color.pink);
@@ -39,9 +23,26 @@ public class GameBoard extends JPanel implements ActionListener {
         navigationPane.add(Box.createRigidArea(new Dimension(0, 20)));
         navigationPane.add(getNavigationButtonsPane());
 
-        add(new GameField(fileName), BorderLayout.CENTER);
+        this.navigationPane = navigationPane;
+
+        add(gameField, BorderLayout.CENTER);
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(navigationPane);
+        add(this.navigationPane);
+
+        createBtn.addActionListener((ActionEvent e) -> {
+            removeAll();
+            this.gameField = new GameField("dog.png");
+            add(this.gameField, BorderLayout.CENTER);
+            add(Box.createRigidArea(new Dimension(10, 0)));
+            add(this.navigationPane);
+            this.revalidate();
+        });
+
+        upBtn.addActionListener((ActionEvent e) -> {
+            gameField.move();
+            gameField.revalidate();
+            gameField.repaint();
+        });
     }
 
     private JPanel getMainButtonsPane() {
@@ -51,7 +52,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
         createBtn = new Button("create");
         createBtn.setBackground(Color.yellow);
-        createBtn.addActionListener((ActionEvent e) -> {new GameBoard("dog.png");});
         Button feedBtn = new Button("feed");
         feedBtn.setBackground(Color.yellow);
 
@@ -70,7 +70,7 @@ public class GameBoard extends JPanel implements ActionListener {
         JPanel upPane = new JPanel();
         upPane.setBackground(Color.pink);
 
-        Button upBtn = new Button("up");
+        upBtn = new Button("up");
         upBtn.setPreferredSize(new Dimension(40, 40));
         upBtn.setBackground(Color.yellow);
         upPane.add(upBtn);
@@ -103,11 +103,5 @@ public class GameBoard extends JPanel implements ActionListener {
         navigationButtonsPane.add(downPane);
 
         return navigationButtonsPane;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        this.add(new GameField("dog.png"), BorderLayout.CENTER);
-        //repaint();
     }
 }
