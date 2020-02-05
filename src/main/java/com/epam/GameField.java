@@ -62,6 +62,12 @@ public class GameField extends JPanel {
     public void feed() {
         if(pet.x.equals(food.x) && pet.y.equals(food.y)) {
             food.icon = null;
+
+            if(pet.happiness < 10) {
+                pet.happiness += 2;
+            }
+
+            pet.fullness = 10;
         }
     }
 
