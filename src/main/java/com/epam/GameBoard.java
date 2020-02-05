@@ -48,8 +48,10 @@ public class GameBoard extends JPanel {
         });
 
         feedBtn.addActionListener((ActionEvent e) -> {
-            gameField.setFoodIcon(foodIconFileName);
-            gameField.repaint();
+            if(gameField.hasPetIcon()) {
+                gameField.setFoodIcon(foodIconFileName);
+                gameField.repaint();
+            }
         });
 
         upBtn.addActionListener((ActionEvent e) -> {
