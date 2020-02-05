@@ -35,9 +35,28 @@ public class GameField extends JPanel {
         pet.setyCoord((int) Math.sqrt((double) ALL_DOTS) / 2 * DOT_SIZE);
     }
 
-    public void move() {
-        int petY = pet.getyCoord();
-        pet.setyCoord(petY - DOT_SIZE);
+    public void moveUp() {
+        if(pet.getyCoord() >  0) {
+            pet.setyCoord(pet.getyCoord() - DOT_SIZE);
+        }
+    }
+
+    public void moveDown() {
+        if(pet.getyCoord() < SIZE - DOT_SIZE){
+            pet.setyCoord(pet.getyCoord() + DOT_SIZE);
+        }
+    }
+
+    public void moveLeft() {
+        if(pet.getxCoord() > 0) {
+            pet.setxCoord(pet.getxCoord() - DOT_SIZE);
+        }
+    }
+
+    public void moveRight() {
+        if(pet.getxCoord() < SIZE - DOT_SIZE) {
+            pet.setxCoord(pet.getxCoord() + DOT_SIZE);
+        }
     }
 
     @Override

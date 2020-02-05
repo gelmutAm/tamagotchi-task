@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 public class GameBoard extends JPanel {
     private Button createBtn;
     private Button upBtn;
+    private Button leftBtn;
+    private Button rightBtn;
+    private Button downBtn;
     private GameField gameField;
     private JPanel navigationPane;
 
@@ -31,7 +34,7 @@ public class GameBoard extends JPanel {
 
         createBtn.addActionListener((ActionEvent e) -> {
             removeAll();
-            this.gameField = new GameField("dog.png");
+            this.gameField = new GameField("pug.png");
             add(this.gameField, BorderLayout.CENTER);
             add(Box.createRigidArea(new Dimension(10, 0)));
             add(this.navigationPane);
@@ -39,8 +42,26 @@ public class GameBoard extends JPanel {
         });
 
         upBtn.addActionListener((ActionEvent e) -> {
-            gameField.move();
-            gameField.revalidate();
+            gameField.moveUp();
+            //gameField.revalidate();
+            gameField.repaint();
+        });
+
+        downBtn.addActionListener((ActionEvent e) -> {
+            gameField.moveDown();
+            //gameField.revalidate();
+            gameField.repaint();
+        });
+
+        leftBtn.addActionListener((ActionEvent e) -> {
+            gameField.moveLeft();
+            //gameField.revalidate();
+            gameField.repaint();
+        });
+
+        rightBtn.addActionListener((ActionEvent e) -> {
+            gameField.moveRight();
+            //gameField.revalidate();
             gameField.repaint();
         });
     }
@@ -79,10 +100,10 @@ public class GameBoard extends JPanel {
         leftRightPane.setBackground(Color.pink);
         leftRightPane.setLayout(new BoxLayout(leftRightPane, BoxLayout.LINE_AXIS));
 
-        Button leftBtn = new Button("left");
+        leftBtn = new Button("left");
         leftBtn.setPreferredSize(new Dimension(40, 40));
         leftBtn.setBackground(Color.yellow);
-        Button rightBtn = new Button("right");
+        rightBtn = new Button("right");
         rightBtn.setPreferredSize(new Dimension(40, 40));
         rightBtn.setBackground(Color.yellow);
 
@@ -93,7 +114,7 @@ public class GameBoard extends JPanel {
         JPanel downPane = new JPanel();
         downPane.setBackground(Color.pink);
 
-        Button downBtn = new Button("down");
+        downBtn = new Button("down");
         downBtn.setPreferredSize(new Dimension(40, 40));
         downBtn.setBackground(Color.yellow);
         downPane.add(downBtn);
