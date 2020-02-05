@@ -5,20 +5,26 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class GameBoard extends JPanel {
+    private final int NAV_BTN_SIZE = 40;
+
     private Button createBtn;
     private Button feedBtn;
-
+    
     private Button upBtn;
     private Button leftBtn;
     private Button rightBtn;
     private Button downBtn;
+
     private GameField gameField;
     private JPanel navigationPane;
+
+    private String petIconFileName = "cat3.png";
+    private String foodIconFileName = "fish-fish.png";
 
     public GameBoard() {
         setBackground(Color.pink);
 
-        this.gameField = new GameField();
+        gameField = new GameField();
 
         JPanel navigationPane = new JPanel();
         navigationPane.setBackground(Color.pink);
@@ -35,18 +41,14 @@ public class GameBoard extends JPanel {
         add(this.navigationPane);
 
         createBtn.addActionListener((ActionEvent e) -> {
-            if(!this.gameField.hasPetIcon()) {
-                removeAll();
-                this.gameField = new GameField("cat3.png");
-                add(this.gameField, BorderLayout.CENTER);
-                add(Box.createRigidArea(new Dimension(10, 0)));
-                add(this.navigationPane);
-                revalidate();
+            if(!gameField.hasPetIcon()) {
+                gameField.setPetIcon(petIconFileName);
+                repaint();
             }
         });
 
         feedBtn.addActionListener((ActionEvent e) -> {
-            gameField.feed();
+            gameField.setFoodIcon(foodIconFileName);
             gameField.repaint();
         });
 
@@ -97,7 +99,7 @@ public class GameBoard extends JPanel {
         upPane.setBackground(Color.pink);
 
         upBtn = new Button("up");
-        upBtn.setPreferredSize(new Dimension(40, 40));
+        upBtn.setPreferredSize(new Dimension(NAV_BTN_SIZE, NAV_BTN_SIZE));
         upBtn.setBackground(Color.yellow);
         upPane.add(upBtn);
 
@@ -106,21 +108,21 @@ public class GameBoard extends JPanel {
         leftRightPane.setLayout(new BoxLayout(leftRightPane, BoxLayout.LINE_AXIS));
 
         leftBtn = new Button("left");
-        leftBtn.setPreferredSize(new Dimension(40, 40));
+        leftBtn.setPreferredSize(new Dimension(NAV_BTN_SIZE, NAV_BTN_SIZE));
         leftBtn.setBackground(Color.yellow);
         rightBtn = new Button("right");
-        rightBtn.setPreferredSize(new Dimension(40, 40));
+        rightBtn.setPreferredSize(new Dimension(NAV_BTN_SIZE, NAV_BTN_SIZE));
         rightBtn.setBackground(Color.yellow);
 
         leftRightPane.add(leftBtn);
-        leftRightPane.add(Box.createRigidArea(new Dimension(40, 0)));
+        leftRightPane.add(Box.createRigidArea(new Dimension(NAV_BTN_SIZE, 0)));
         leftRightPane.add(rightBtn);
 
         JPanel downPane = new JPanel();
         downPane.setBackground(Color.pink);
 
         downBtn = new Button("down");
-        downBtn.setPreferredSize(new Dimension(40, 40));
+        downBtn.setPreferredSize(new Dimension(NAV_BTN_SIZE, NAV_BTN_SIZE));
         downBtn.setBackground(Color.yellow);
         downPane.add(downBtn);
 

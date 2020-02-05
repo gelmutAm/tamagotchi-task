@@ -16,13 +16,16 @@ public class GameField extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.magenta));
     }
 
-    public GameField(String fileName) {
-        this();
+    public boolean hasPetIcon() {
+        return pet.icon != null;
+    }
+
+    public void setPetIcon(String fileName){
         pet.icon = loadImage(fileName);
     }
 
-    public boolean hasPetIcon() {
-        return pet.icon != null;
+    public void setFoodIcon(String fileName) {
+        food.icon = loadImage(fileName);
     }
 
     private Image loadImage(String fileName) {
@@ -52,10 +55,6 @@ public class GameField extends JPanel {
         if(pet.x < SIZE - DOT_SIZE) {
             pet.x += DOT_SIZE;
         }
-    }
-
-    public void feed() {
-        food.icon = loadImage("fish-fish.png");
     }
 
     @Override
