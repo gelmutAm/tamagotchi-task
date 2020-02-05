@@ -41,15 +41,15 @@ public class GameBoard extends JPanel {
         add(this.navigationPane);
 
         createBtn.addActionListener((ActionEvent e) -> {
-            if(!gameField.hasPetIcon()) {
-                gameField.setPetIcon(petIconFileName);
+            if(!gameField.hasPet()) {
+                gameField.createPet(petIconFileName);
                 repaint();
             }
         });
 
         feedBtn.addActionListener((ActionEvent e) -> {
-            if(gameField.hasPetIcon()) {
-                gameField.setFoodIcon(foodIconFileName);
+            if(gameField.hasPet()) {
+                gameField.createFood(foodIconFileName);
                 gameField.repaint();
             }
         });
