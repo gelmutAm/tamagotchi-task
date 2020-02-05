@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 
 public class GameBoard extends JPanel {
     private Button createBtn;
+    private Button feedBtn;
+
     private Button upBtn;
     private Button leftBtn;
     private Button rightBtn;
@@ -33,35 +35,38 @@ public class GameBoard extends JPanel {
         add(this.navigationPane);
 
         createBtn.addActionListener((ActionEvent e) -> {
-            removeAll();
-            this.gameField = new GameField("pug.png");
-            add(this.gameField, BorderLayout.CENTER);
-            add(Box.createRigidArea(new Dimension(10, 0)));
-            add(this.navigationPane);
-            this.revalidate();
+            if(!this.gameField.hasPetIcon()) {
+                removeAll();
+                this.gameField = new GameField("cat3.png");
+                add(this.gameField, BorderLayout.CENTER);
+                add(Box.createRigidArea(new Dimension(10, 0)));
+                add(this.navigationPane);
+                revalidate();
+            }
+        });
+
+        feedBtn.addActionListener((ActionEvent e) -> {
+            gameField.feed();
+            gameField.repaint();
         });
 
         upBtn.addActionListener((ActionEvent e) -> {
             gameField.moveUp();
-            //gameField.revalidate();
             gameField.repaint();
         });
 
         downBtn.addActionListener((ActionEvent e) -> {
             gameField.moveDown();
-            //gameField.revalidate();
             gameField.repaint();
         });
 
         leftBtn.addActionListener((ActionEvent e) -> {
             gameField.moveLeft();
-            //gameField.revalidate();
             gameField.repaint();
         });
 
         rightBtn.addActionListener((ActionEvent e) -> {
             gameField.moveRight();
-            //gameField.revalidate();
             gameField.repaint();
         });
     }
@@ -73,7 +78,7 @@ public class GameBoard extends JPanel {
 
         createBtn = new Button("create");
         createBtn.setBackground(Color.yellow);
-        Button feedBtn = new Button("feed");
+        feedBtn = new Button("feed");
         feedBtn.setBackground(Color.yellow);
 
         mainButtonsPane.add(createBtn);
