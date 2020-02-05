@@ -25,7 +25,9 @@ public class GameField extends JPanel {
     }
 
     public void setFoodIcon(String fileName) {
-        food.icon = loadImage(fileName);
+        if(!pet.x.equals(food.x) || !pet.y.equals(food.x)) {
+            food.icon = loadImage(fileName);
+        }
     }
 
     private Image loadImage(String fileName) {
@@ -57,6 +59,12 @@ public class GameField extends JPanel {
         }
     }
 
+    public void feed() {
+        if(pet.x.equals(food.x) && pet.y.equals(food.y)) {
+            food.icon = null;
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -72,8 +80,8 @@ public class GameField extends JPanel {
         Image icon;
 
         Pet() {
-            this.y = 0;
             this.x = 0;
+            this.y = 0;
             this.happiness = 10;
             this.fullness = 10;
         }

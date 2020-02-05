@@ -9,7 +9,7 @@ public class GameBoard extends JPanel {
 
     private Button createBtn;
     private Button feedBtn;
-    
+
     private Button upBtn;
     private Button leftBtn;
     private Button rightBtn;
@@ -54,21 +54,25 @@ public class GameBoard extends JPanel {
 
         upBtn.addActionListener((ActionEvent e) -> {
             gameField.moveUp();
+            gameField.feed();
             gameField.repaint();
         });
 
         downBtn.addActionListener((ActionEvent e) -> {
             gameField.moveDown();
+            gameField.feed();
             gameField.repaint();
         });
 
         leftBtn.addActionListener((ActionEvent e) -> {
             gameField.moveLeft();
+            gameField.feed();
             gameField.repaint();
         });
 
         rightBtn.addActionListener((ActionEvent e) -> {
             gameField.moveRight();
+            gameField.feed();
             gameField.repaint();
         });
     }
