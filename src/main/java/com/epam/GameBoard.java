@@ -3,6 +3,7 @@ package com.epam;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 public class GameBoard extends JPanel {
     private final int NAV_BTN_SIZE = 40;
@@ -15,16 +16,26 @@ public class GameBoard extends JPanel {
     private Button rightBtn;
     private Button downBtn;
 
-    private GameField gameField = new GameField();
+    private GameField gameField;
     private JPanel navigationPane;
 
     private String petIconFileName = "cat3.png";
     private String foodIconFileName = "fish-fish.png";
 
-    public GameBoard() {
+    Serializator serializator = new Serializator();
+
+    public GameBoard(GameField gameField) throws IOException {
         setBackground(Color.pink);
 
-        //gameField = new GameField();
+        this.gameField = gameField;
+
+        if(this.gameField.hasPet()) {
+            this.gameField.initTimer();
+        }
+
+        if(this.gameField.getCurrentDelay() == this.gameField.getTimeToWait()) {
+            this.gameField.initTimer();
+        }
 
         JPanel navigationPane = new JPanel();
         navigationPane.setBackground(Color.pink);
@@ -43,7 +54,13 @@ public class GameBoard extends JPanel {
         createBtn.addActionListener((ActionEvent e) -> {
             if(!gameField.hasPet()) {
                 gameField.createPet(petIconFileName);
-                repaint();
+                gameField.repaint();
+
+                try {
+                    serializator.serialization(gameField);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
@@ -51,6 +68,12 @@ public class GameBoard extends JPanel {
             if(gameField.hasPet()) {
                 gameField.createFood(foodIconFileName);
                 gameField.repaint();
+
+                try {
+                    serializator.serialization(gameField);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
@@ -58,31 +81,49 @@ public class GameBoard extends JPanel {
             gameField.moveUp();
             gameField.feed();
             gameField.repaint();
+
+            try {
+                serializator.serialization(gameField);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 
         downBtn.addActionListener((ActionEvent e) -> {
             gameField.moveDown();
             gameField.feed();
             gameField.repaint();
+
+            try {
+                serializator.serialization(gameField);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 
         leftBtn.addActionListener((ActionEvent e) -> {
             gameField.moveLeft();
             gameField.feed();
             gameField.repaint();
+
+            try {
+                serializator.serialization(gameField);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 
         rightBtn.addActionListener((ActionEvent e) -> {
             gameField.moveRight();
             gameField.feed();
             gameField.repaint();
-        });
-    }
 
-    public GameBoard(GameField gameField) {
-        this();
-        this.gameField = gameField;
-        this.gameField.repaint();
+            try {
+                serializator.serialization(gameField);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
     }
 
     private JPanel getMainButtonsPane() {
