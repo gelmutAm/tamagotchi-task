@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 
 public class GameField extends JPanel
         implements ActionListener, Serializable {
@@ -20,6 +21,7 @@ public class GameField extends JPanel
 
     private int playCount = 0;
     private String creationMessage = "";
+    private Date creationDate;
     private Timer timer = new Timer(DELAY, this);
 
     private Pet pet;
@@ -47,6 +49,7 @@ public class GameField extends JPanel
             pet.icon = new ImageIcon(fileName);
             pet.happiness = 1;
             pet.fullness = 2;
+            creationDate = new Date();
             initTimer();
         } else {
             creationMessage = "You can't create a pet. Please wait.";
@@ -136,11 +139,20 @@ public class GameField extends JPanel
         return TIME_TO_WAIT;
     }
 
-    public void print() {
-        System.out.println(this.pet.x + " " + this.pet.y);
-        System.out.println(this.pet.happiness);
-        System.out.println(this.pet.fullness);
-        System.out.println(Pet.HAPPINESS_MAX_VALUE);
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setHappiness(int happiness) {
+        if(pet != null) {
+            pet.happiness = happiness;
+        }
+    }
+
+    public void setFullness(int fullness) {
+        if(pet != null) {
+            pet.fullness = fullness;
+        }
     }
 
     @Override
