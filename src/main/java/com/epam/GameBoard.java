@@ -15,7 +15,7 @@ public class GameBoard extends JPanel {
     private Button rightBtn;
     private Button downBtn;
 
-    private GameField gameField;
+    private GameField gameField = new GameField();
     private JPanel navigationPane;
 
     private String petIconFileName = "cat3.png";
@@ -24,7 +24,7 @@ public class GameBoard extends JPanel {
     public GameBoard() {
         setBackground(Color.pink);
 
-        gameField = new GameField();
+        //gameField = new GameField();
 
         JPanel navigationPane = new JPanel();
         navigationPane.setBackground(Color.pink);
@@ -77,6 +77,12 @@ public class GameBoard extends JPanel {
             gameField.feed();
             gameField.repaint();
         });
+    }
+
+    public GameBoard(GameField gameField) {
+        this();
+        this.gameField = gameField;
+        this.gameField.repaint();
     }
 
     private JPanel getMainButtonsPane() {

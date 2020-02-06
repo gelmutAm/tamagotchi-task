@@ -12,9 +12,13 @@ public class GameField extends JPanel
     private final int DOT_SIZE = 28;
     private final int DELAY = 60000;
     private final int TIME_TO_WAIT = 70000;
+    private final Image RIP_ICON = loadImage("RIP.png");
 
+    private int ripX;
+    private int ripY;
+
+    private int playCount = 0;
     private String creationMessage = "";
-
     private Timer timer = new Timer(DELAY, this);
 
     private Pet pet;
@@ -105,7 +109,14 @@ public class GameField extends JPanel
 
     public void reduceIndicators() {
         pet.fullness -= 2;
-        pet.happiness--;
+
+        if(pet.happiness > Pet.HAPPINESS_MIN_VALUE) {
+            pet.happiness--;
+        }
+    }
+
+    public int getDelay() {
+        return DELAY;
     }
 
     @Override
@@ -121,8 +132,11 @@ public class GameField extends JPanel
             g.setColor(Color.black);
             g.drawString("happiness: " + pet.happiness, 5, 15);
             g.drawString("fullness: " + pet.fullness, 5, 30);
+        } else if(playCount == 1) {
+            g.drawImage(RIP_ICON, ripX, ripY, this);
         }
 
+        g.setColor(Color.RED);
         g.drawString(creationMessage, DOT_SIZE * 2, SIZE / 2);
     }
 
@@ -133,20 +147,26 @@ public class GameField extends JPanel
                 reduceIndicators();
                 timer.restart();
             } else {
+                pet.happiness = 0;
+                pet.fullness = 0;
+                ripX = pet.x;
+                ripY = pet.y;
                 pet = null;
                 food = null;
+                playCount++;
                 timer.setDelay(TIME_TO_WAIT);
                 timer.restart();
             }
         } else {
-            timer.setDelay(DELAY);
+            playCount = 0;
             creationMessage = "";
+            timer.setDelay(DELAY);
         }
 
         repaint();
     }
 
-    private class Pet {
+    private class Pet implements Serializable{
         static final int HAPPINESS_MIN_VALUE = 0;
         static final int HAPPINESS_MAX_VALUE = 10;
         static final int FULLNESS_MIN_VALUE = 0;
@@ -159,14 +179,14 @@ public class GameField extends JPanel
         Image icon;
 
         Pet() {
-            this.x = 0;
-            this.y = 0;
+            this.x = 3 * DOT_SIZE;
+            this.y = 3 * DOT_SIZE;
             this.happiness = HAPPINESS_MAX_VALUE;
             this.fullness = FULLNESS_MAX_VALUE;
         }
     }
 
-    private class Food {
+    private class Food implements Serializable{
         Integer x;
         Integer y;
         Image icon;
