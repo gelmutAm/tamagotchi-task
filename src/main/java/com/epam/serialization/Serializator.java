@@ -1,8 +1,10 @@
-package com.epam;
+package com.epam.serialization;
+
+import com.epam.graphics.GameField;
 
 import java.io.*;
 
-public class Serializator implements Serializable{
+public class Serializator {
 
     public boolean serialization(GameField gameField) throws IOException {
         File file = new File("gamefield.data");
