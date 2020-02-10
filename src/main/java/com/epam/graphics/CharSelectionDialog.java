@@ -3,9 +3,11 @@ package com.epam.graphics;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CharSelectionDialog extends JDialog {
-    private String characterIconFileName;
+    private List<ImageIcon> characterIcons;
     private String foodIconFileName;
     private String toyIconFileName;
 
@@ -21,14 +23,20 @@ public class CharSelectionDialog extends JDialog {
         add(getSelectionPane());
 
         dogBtn.addActionListener((ActionEvent e) -> {
-            characterIconFileName = "dog.png";
+            List<String> list = new ArrayList<>();
+            list.add("dog_teen.png");
+            list.add("dog_adult.png");
+            list.add("dog_elderly.png");
+
+            characterIcons = getIcons(list);
             foodIconFileName = "bone.png";
             toyIconFileName = "ball.png";
             this.dispose();
         });
 
         catBtn.addActionListener((ActionEvent e) -> {
-            characterIconFileName = "cat.png";
+            ArrayList<ImageIcon> list = new ArrayList<>();
+            characterIcons = list;
             foodIconFileName = "chicken.png";
             toyIconFileName = "bow.png";
             this.dispose();
@@ -36,18 +44,6 @@ public class CharSelectionDialog extends JDialog {
 
         setVisible(true);
         setResizable(false);
-    }
-
-    public String getCharacterIconFileName() {
-        return characterIconFileName;
-    }
-
-    public String getFoodIconFileName() {
-        return foodIconFileName;
-    }
-
-    public String getToyIconFileName() {
-        return toyIconFileName;
     }
 
     public JPanel getSelectionPane() {
@@ -72,5 +68,27 @@ public class CharSelectionDialog extends JDialog {
         selectionPane.add(buttonsPane, BorderLayout.CENTER);
 
         return selectionPane;
+    }
+
+    public List<ImageIcon> getCharacterIcons() {
+        return characterIcons;
+    }
+
+    public String getFoodIconFileName() {
+        return foodIconFileName;
+    }
+
+    public String getToyIconFileName() {
+        return toyIconFileName;
+    }
+
+    private List<ImageIcon> getIcons(List<String> fileNames) {
+        List<ImageIcon> result = new ArrayList<>();
+
+        for(String item : fileNames) {
+            result.add(new ImageIcon(item));
+        }
+
+        return result;
     }
 }

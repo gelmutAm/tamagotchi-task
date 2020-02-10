@@ -2,7 +2,7 @@ package com.epam.models;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 
 public class Pet implements GameFieldCharacter, Serializable {
     private final int MIN_HAPPINESS_VALUE = 0;
@@ -14,13 +14,16 @@ public class Pet implements GameFieldCharacter, Serializable {
     private Integer y;
     private Integer happiness;
     private Integer fullness;
-    private ImageIcon icon;
+    private Age age;
+    private ImageIcon currentIcon;
+    private List<ImageIcon> icons;
 
     public Pet(int coord) {
         x = coord;
         y = coord;
         happiness = 1 /*MAX_HAPPINESS_VALUE*/;
         fullness = 2 /*MAX_FULLNESS_VALUE*/;
+        age = Age.TEEN;
     }
 
     @Override
@@ -64,8 +67,18 @@ public class Pet implements GameFieldCharacter, Serializable {
     }
 
     @Override
-    public ImageIcon getIcon() {
-        return icon;
+    public Age getAge() {
+        return age;
+    }
+
+    @Override
+    public ImageIcon getCurrentIcon() {
+        return currentIcon;
+    }
+
+    @Override
+    public List<ImageIcon> getIcons() {
+        return icons;
     }
 
     @Override
@@ -117,24 +130,20 @@ public class Pet implements GameFieldCharacter, Serializable {
         }
     }
 
-    public void setIcon(ImageIcon icon) {
-        this.icon = icon;
+    @Override
+    public void changeAge(ImageIcon icon) {
+        Age[] ages = Age.values();
+        if(age.ordinal() < ages.length - 1) {
+            age = ages[age.ordinal() + 1];
+            currentIcon = icon;
+        }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Pet)) return false;
-        Pet pet = (Pet) o;
-        return Objects.equals(x, pet.x) &&
-                Objects.equals(y, pet.y) &&
-                Objects.equals(happiness, pet.happiness) &&
-                Objects.equals(fullness, pet.fullness) &&
-                Objects.equals(icon, pet.icon);
+    public void setCurrentIcon(ImageIcon icon) {
+        this.currentIcon = icon;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, happiness, fullness, icon);
+    public void setIcons(List<ImageIcon> icons) {
+        this.icons = icons;
     }
 }

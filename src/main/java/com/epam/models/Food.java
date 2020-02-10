@@ -2,7 +2,6 @@ package com.epam.models;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 public class Food implements GameFieldFood, Serializable {
     private Integer x;

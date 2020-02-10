@@ -1,6 +1,7 @@
 package com.epam.models;
 
 import javax.swing.*;
+import java.util.List;
 
 public interface GameFieldCharacter {
 
@@ -20,7 +21,11 @@ public interface GameFieldCharacter {
 
     int getFullnessMax();
 
-    ImageIcon getIcon();
+    ImageIcon getCurrentIcon();
+
+    List<ImageIcon> getIcons();
+
+    Age getAge();
 
     void moveUp(int step);
 
@@ -35,4 +40,6 @@ public interface GameFieldCharacter {
     void play(int increaseHappinessValue);
 
     void reduceIndicators(int happinessValue, int fullnessValue);
+
+    public void changeAge(ImageIcon icon);
 }

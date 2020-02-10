@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 
 public class GameField extends JPanel
         implements Serializable, ActionListener {
@@ -18,16 +18,17 @@ public class GameField extends JPanel
     private final int CELL_SIZE = 35;
     private final int MIN_COORD = 0;
     private final int MAX_COORD = SIZE - CELL_SIZE;
-    private final int DELAY = 60000;
+    private final int DELAY = 30000;
     private final ImageIcon RIP = new ImageIcon("rip.png");
 
     private GameFieldLogicInterface gameFieldLogic;
 
     private Timer timer = new Timer(DELAY, this);
-    private int playCount = 0;
-    private String creationMessage = "";
+    private boolean characterIsDead;
     private int ripX;
     private int ripY;
+
+    private int tickCount = 0;
 
     public GameField(GameFieldLogicInterface gameFieldLogic) {
         setPreferredSize(new Dimension(SIZE, SIZE));
@@ -35,15 +36,6 @@ public class GameField extends JPanel
         setBorder(BorderFactory.createLineBorder(Color.magenta));
 
         this.gameFieldLogic = gameFieldLogic;
-    }
-
-    public GameField(GameField gameField) {
-        this.gameFieldLogic = gameField.getGameFieldLogic();
-        this.timer = gameField.getTimer();
-        this.playCount = gameField.getPlayCount();
-        this.creationMessage = gameField.getCreationMessage();
-        this.ripX = gameField.getRipX();
-        this.ripY = gameField.getRipY();
     }
 
     public void initTimer() {
@@ -62,8 +54,8 @@ public class GameField extends JPanel
         return gameFieldLogic.getCharacter() != null;
     }
 
-    public void createCharacter(String iconFileName) {
-        gameFieldLogic.createCharacter(iconFileName, CELL_SIZE, 3);
+    public void createCharacter(List<ImageIcon> icons) {
+        gameFieldLogic.createCharacter(icons, CELL_SIZE, 3);
         initTimer();
     }
 
@@ -110,7 +102,7 @@ public class GameField extends JPanel
 
         if(gameFieldLogic.getCharacter() != null) {
             GameFieldCharacter character = gameFieldLogic.getCharacter();
-            Image charIcon = character.getIcon().getImage();
+            Image charIcon = character.getCurrentIcon().getImage();
             int charX = character.getX();
             int charY = character.getY();
             g.drawImage(charIcon, charX, charY, this);
@@ -133,10 +125,9 @@ public class GameField extends JPanel
 
             g.drawString("happiness: " + character.getHappiness(), 5, 15);
             g.drawString("fullness: " + character.getFullness(), 5, 30);
-        } else if(playCount == 1){
+            g.drawString("age: " + character.getAge(), 5, 45);
+        } else if(characterIsDead){
             g.drawImage(RIP.getImage(), ripX, ripY, this);
-            g.setColor(Color.red);
-            g.drawString(creationMessage, CELL_SIZE * 2, SIZE / 2);
         }
     }
 
@@ -147,57 +138,26 @@ public class GameField extends JPanel
         int fullnessValue = 2;
 
         if(character != null) {
+            if(tickCount == 1) {
+                gameFieldLogic.changeAge();
+                tickCount = 0;
+            }
             if (character.getFullness() > character.getFullnessMin() + fullnessValue) {
                 gameFieldLogic.reduceIndicators(happinessValue, fullnessValue);
+                tickCount++;
             } else {
                 ripX = character.getX();
                 ripY = character.getY();
                 gameFieldLogic.setCharacterToNull();
                 gameFieldLogic.setFoodToNull();
-                playCount++;
+                characterIsDead = true;
+                tickCount = 0;
             }
         } else {
-            playCount = 0;
-            creationMessage = "";
+            characterIsDead = false;
         }
 
         repaint();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GameField)) return false;
-        GameField gameField = (GameField) o;
-        return SIZE == gameField.SIZE &&
-                CELL_SIZE == gameField.CELL_SIZE &&
-                MIN_COORD == gameField.MIN_COORD &&
-                MAX_COORD == gameField.MAX_COORD &&
-                DELAY == gameField.DELAY &&
-                playCount == gameField.playCount &&
-                ripX == gameField.ripX &&
-                ripY == gameField.ripY &&
-                Objects.equals(RIP, gameField.RIP) &&
-                Objects.equals(gameFieldLogic, gameField.gameFieldLogic) &&
-                Objects.equals(timer, gameField.timer) &&
-                Objects.equals(creationMessage, gameField.creationMessage);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(SIZE,
-                CELL_SIZE,
-                MIN_COORD,
-                MAX_COORD,
-                DELAY,
-                RIP,
-                gameFieldLogic,
-                timer,
-                playCount,
-                creationMessage,
-                ripX,
-                ripY
-        );
     }
 
     public GameFieldLogicInterface getGameFieldLogic() {
@@ -208,12 +168,8 @@ public class GameField extends JPanel
         return timer;
     }
 
-    public int getPlayCount() {
-        return playCount;
-    }
-
-    public String getCreationMessage() {
-        return creationMessage;
+    public boolean characterIsDead() {
+        return characterIsDead;
     }
 
     public int getRipX() {

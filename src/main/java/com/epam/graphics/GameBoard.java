@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.io.IOException;
 
 public class GameBoard extends JPanel implements ActionListener {
@@ -26,7 +27,7 @@ public class GameBoard extends JPanel implements ActionListener {
     private JPanel navigationPane;
     private CharSelectionDialog charSelectionDialog;
 
-    private String petIconFileName;
+    private List<ImageIcon> petIcons;
     private String foodIconFileName;
     private String toyIconFileName;
 
@@ -44,8 +45,6 @@ public class GameBoard extends JPanel implements ActionListener {
         //gameField = new GameField(new GameFieldLogic());
         //previousGameField = new GameField(gameField);
 
-        timer.start();
-
         JPanel navigationPane = new JPanel();
         navigationPane.setBackground(Color.pink);
         navigationPane.setLayout(new BoxLayout(navigationPane, BoxLayout.PAGE_AXIS));
@@ -61,17 +60,17 @@ public class GameBoard extends JPanel implements ActionListener {
         add(this.navigationPane);
 
         createBtn.addActionListener((ActionEvent e) -> {
-            if(!gameField.characterExists() && gameField.getPlayCount() != 1) {
+            if(!gameField.characterExists() && !gameField.characterIsDead()) {
                 charSelectionDialog = new CharSelectionDialog();
-                petIconFileName = charSelectionDialog.getCharacterIconFileName();
+                petIcons = charSelectionDialog.getCharacterIcons();
                 foodIconFileName = charSelectionDialog.getFoodIconFileName();
                 toyIconFileName = charSelectionDialog.getToyIconFileName();
 
-                if(petIconFileName != null) {
-                    gameField.createCharacter(charSelectionDialog.getCharacterIconFileName());
+                if(petIcons != null) {
+                    gameField.createCharacter(petIcons);
                     gameField.repaint();
                 }
-            }else if(gameField.getPlayCount() == 1){
+            }else if(gameField.characterIsDead()){
                 new CreationDialog(creationMessage);
             }
         });

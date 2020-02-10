@@ -4,7 +4,7 @@ import com.epam.models.*;
 
 import javax.swing.*;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 import java.util.Random;
 
 public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
@@ -13,34 +13,40 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
     private GameFieldFood food;
     private GameFieldToy toy;
 
+    private int iconIndex = 0;
+
+    @Override
     public GameFieldCharacter getCharacter() {
         return character;
     }
 
+    @Override
     public GameFieldFood getFood() {
         return food;
     }
 
+    @Override
     public GameFieldToy getToy() {
         return toy;
     }
 
-    public int getRandomCoord(int gameFieldSize, int cellSize) {
+    private int getRandomCoord(int gameFieldSize, int cellSize) {
         Random random = new Random();
         int value = random.nextInt(gameFieldSize - cellSize);
         value /= cellSize;
         return value * cellSize;
     }
 
-    public void createCharacter(String iconFileName, int cellSize, int shift) {
-        if(character == null) {
-            int coord = cellSize * shift;
-            Pet pet = new Pet(coord);
-            pet.setIcon(new ImageIcon(iconFileName));
-            character = pet;
-        }
+    @Override
+    public void createCharacter(List<ImageIcon> icons, int cellSize, int shift) {
+        int coord = cellSize * shift;
+        Pet pet = new Pet(coord);
+        pet.setIcons(icons);
+        pet.setCurrentIcon(pet.getIcons().get(iconIndex));
+        character = pet;
     }
 
+    @Override
     public void createFood(String iconFileName, int increaseHappinessValue, int increaseFullnessValue, int gameFieldSize, int cellSize) {
         if(food == null) {
             int coord = getRandomCoord(gameFieldSize, cellSize);
@@ -56,30 +62,35 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
         }
     }
 
+    @Override
     public void moveUp(int cellSize, int minCoord) {
         if (character.getY() > minCoord) {
             character.moveUp(cellSize);
         }
     }
 
+    @Override
     public void moveDown(int cellSize, int maxCoord) {
         if (character.getY() < maxCoord) {
             character.moveDown(cellSize);
         }
     }
 
+    @Override
     public void moveLeft(int cellSize, int minCoord) {
         if (character.getX() > minCoord) {
             character.moveLeft(cellSize);
         }
     }
 
+    @Override
     public void moveRight(int cellSize, int maxCoord) {
         if (character.getX() < maxCoord) {
             character.moveRight(cellSize);
         }
     }
 
+    @Override
     public boolean feed() {
         if(food != null) {
             if (food.getX() == character.getX() && food.getY() == character.getY()) {
@@ -93,6 +104,7 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
         return false;
     }
 
+    @Override
     public void play(String iconFileName, int increaseHappinessValue, int gameFieldSize, int cellSize) {
         if(character != null) {
             int coord = getRandomCoord(gameFieldSize, cellSize);
@@ -107,29 +119,26 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
         }
     }
 
+    @Override
     public void reduceIndicators(int happinessValue, int fullnessValue) {
         character.reduceIndicators(happinessValue, fullnessValue);
     }
 
+    @Override
+    public void changeAge() {
+        if(iconIndex < character.getIcons().size() - 1) {
+            iconIndex++;
+            character.changeAge(character.getIcons().get(iconIndex));
+        }
+    }
+
+    @Override
     public void setCharacterToNull() {
         character = null;
     }
 
+    @Override
     public void setFoodToNull() {
         food = null;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GameFieldLogic)) return false;
-        GameFieldLogic that = (GameFieldLogic) o;
-        return Objects.equals(character, that.character) &&
-                Objects.equals(food, that.food);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(character, food);
     }
 }

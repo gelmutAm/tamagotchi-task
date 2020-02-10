@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.io.Serializable;
 
 public class Toy implements GameFieldToy, Serializable {
-    Integer x;
-    Integer y;
-    Integer increaseHappinessValue;
-    ImageIcon icon;
+    private Integer x;
+    private Integer y;
+    private Integer increaseHappinessValue;
+    private ImageIcon icon;
 
     public Toy(int coord, int increaseHappinessValue, ImageIcon icon) {
         x = coord;
