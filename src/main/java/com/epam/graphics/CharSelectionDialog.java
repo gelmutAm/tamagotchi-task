@@ -35,8 +35,12 @@ public class CharSelectionDialog extends JDialog {
         });
 
         catBtn.addActionListener((ActionEvent e) -> {
-            ArrayList<ImageIcon> list = new ArrayList<>();
-            characterIcons = list;
+            List<String> list = new ArrayList<>();
+            list.add("cat_teen.png");
+            list.add("cat_adult.png");
+            list.add("cat_elderly.png");
+
+            characterIcons = getIcons(list);
             foodIconFileName = "chicken.png";
             toyIconFileName = "bow.png";
             this.dispose();

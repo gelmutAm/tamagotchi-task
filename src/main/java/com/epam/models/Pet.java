@@ -21,8 +21,8 @@ public class Pet implements GameFieldCharacter, Serializable {
     public Pet(int coord) {
         x = coord;
         y = coord;
-        happiness = 1 /*MAX_HAPPINESS_VALUE*/;
-        fullness = 2 /*MAX_FULLNESS_VALUE*/;
+        happiness = MAX_HAPPINESS_VALUE;
+        fullness = MAX_FULLNESS_VALUE;
         age = Age.TEEN;
     }
 
@@ -133,6 +133,7 @@ public class Pet implements GameFieldCharacter, Serializable {
     @Override
     public void changeAge(ImageIcon icon) {
         Age[] ages = Age.values();
+
         if(age.ordinal() < ages.length - 1) {
             age = ages[age.ordinal() + 1];
             currentIcon = icon;

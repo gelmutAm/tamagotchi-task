@@ -1,6 +1,7 @@
 package com.epam.graphics;
 
 import com.epam.logic.GameFieldLogicInterface;
+import com.epam.models.Age;
 import com.epam.models.GameFieldCharacter;
 import com.epam.models.GameFieldFood;
 import com.epam.models.GameFieldToy;
@@ -8,12 +9,10 @@ import com.epam.models.GameFieldToy;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.List;
 
-public class GameField extends JPanel
-        implements Serializable, ActionListener {
+public class GameField extends JPanel implements Serializable {
     private final int SIZE = 280;
     private final int CELL_SIZE = 35;
     private final int MIN_COORD = 0;
@@ -23,12 +22,12 @@ public class GameField extends JPanel
 
     private GameFieldLogicInterface gameFieldLogic;
 
-    private Timer timer = new Timer(DELAY, this);
+    private Timer lifeTimer = new Timer(DELAY, null);
+    private Timer ageTimer = new Timer(DELAY, null);
+
     private boolean characterIsDead;
     private int ripX;
     private int ripY;
-
-    private int tickCount = 0;
 
     public GameField(GameFieldLogicInterface gameFieldLogic) {
         setPreferredSize(new Dimension(SIZE, SIZE));
@@ -38,25 +37,52 @@ public class GameField extends JPanel
         this.gameFieldLogic = gameFieldLogic;
     }
 
-    public void initTimer() {
-        timer.start();
+    public void initLifeTimer() {
+        lifeTimer.addActionListener((ActionEvent e) -> {
+            GameFieldCharacter character = gameFieldLogic.getCharacter();
+            int happinessValue = 1;
+            int fullnessValue = 2;
+
+            if(character != null) {
+                if (character.getFullness() > character.getFullnessMin() + fullnessValue) {
+                    gameFieldLogic.reduceIndicators(happinessValue, fullnessValue);
+                } else {
+                    allToStart(character);
+                }
+            } else {
+                characterIsDead = false;
+            }
+
+            repaint();
+        });
     }
 
-    public void restartTimer() {
-        timer.restart();
-    }
+    public void initAgeTimer() {
+        ageTimer.addActionListener((ActionEvent e) -> {
+            if (gameFieldLogic.getCharacter().getAge() == Age.ELDERLY) {
+                allToStart(gameFieldLogic.getCharacter());
+            }
 
-    public void stopTimer() {
-        timer.stop();
+            if (gameFieldLogic.getCharacter() != null) {
+                gameFieldLogic.changeAge();
+            }
+
+            repaint();
+        });
     }
 
     public boolean characterExists() {
         return gameFieldLogic.getCharacter() != null;
     }
 
+    public boolean characterIsDead() {
+        return characterIsDead;
+    }
+
     public void createCharacter(List<ImageIcon> icons) {
         gameFieldLogic.createCharacter(icons, CELL_SIZE, 3);
-        initTimer();
+        lifeTimer.start();
+        ageTimer.start();
     }
 
     public void createFood(String iconFileName, int increaseHappinessValue, int increaseFullnessValue) {
@@ -86,14 +112,20 @@ public class GameField extends JPanel
 
     public void feed() {
         if(gameFieldLogic.feed()) {
-            restartTimer();
+            lifeTimer.restart();
         }
     }
 
     public void play(String iconFileName, int increaseHappinessValue) {
-        stopTimer();
         gameFieldLogic.play(iconFileName, increaseHappinessValue, SIZE, CELL_SIZE);
-        restartTimer();
+    }
+
+    private void allToStart(GameFieldCharacter character) {
+        ripX = character.getX();
+        ripY = character.getY();
+        gameFieldLogic.setCharacterToNull();
+        gameFieldLogic.setFoodToNull();
+        characterIsDead = true;
     }
 
     @Override
@@ -129,54 +161,5 @@ public class GameField extends JPanel
         } else if(characterIsDead){
             g.drawImage(RIP.getImage(), ripX, ripY, this);
         }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        GameFieldCharacter character = gameFieldLogic.getCharacter();
-        int happinessValue = 1;
-        int fullnessValue = 2;
-
-        if(character != null) {
-            if(tickCount == 1) {
-                gameFieldLogic.changeAge();
-                tickCount = 0;
-            }
-            if (character.getFullness() > character.getFullnessMin() + fullnessValue) {
-                gameFieldLogic.reduceIndicators(happinessValue, fullnessValue);
-                tickCount++;
-            } else {
-                ripX = character.getX();
-                ripY = character.getY();
-                gameFieldLogic.setCharacterToNull();
-                gameFieldLogic.setFoodToNull();
-                characterIsDead = true;
-                tickCount = 0;
-            }
-        } else {
-            characterIsDead = false;
-        }
-
-        repaint();
-    }
-
-    public GameFieldLogicInterface getGameFieldLogic() {
-        return gameFieldLogic;
-    }
-
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public boolean characterIsDead() {
-        return characterIsDead;
-    }
-
-    public int getRipX() {
-        return ripX;
-    }
-
-    public int getRipY() {
-        return ripY;
     }
 }

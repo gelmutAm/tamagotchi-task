@@ -41,7 +41,8 @@ public class GameBoard extends JPanel implements ActionListener {
         setBackground(Color.pink);
 
         this.gameField = gameField;
-        this.gameField.initTimer();
+        this.gameField.initLifeTimer();
+        this.gameField.initAgeTimer();
         //gameField = new GameField(new GameFieldLogic());
         //previousGameField = new GameField(gameField);
 
