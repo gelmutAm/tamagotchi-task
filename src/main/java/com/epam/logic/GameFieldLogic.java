@@ -5,6 +5,7 @@ import com.epam.models.*;
 import javax.swing.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
@@ -14,7 +15,20 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
     private GameFieldToy toy;
 
     private int iconIndex = 0;
-    private ImageIcon foodIcon;
+
+    public GameFieldLogic() {
+    }
+
+    public GameFieldLogic(GameFieldLogicInterface gameFieldLogic) {
+        this();
+
+        if(gameFieldLogic.getCharacter() != null) {
+            this.character = new Pet((Pet) gameFieldLogic.getCharacter());
+            this.food = gameFieldLogic.getFood();
+            this.toy = gameFieldLogic.getToy();
+            this.iconIndex = gameFieldLogic.getIconIndex();
+        }
+    }
 
     @Override
     public GameFieldCharacter getCharacter() {
@@ -49,19 +63,16 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
 
     @Override
     public void createFood(String iconFileName, int increaseHappinessValue, int increaseFullnessValue, int gameFieldSize, int cellSize) {
-        if(food == null) {
-            int coord = getRandomCoord(gameFieldSize, cellSize);
-            Food food = new Food(coord, increaseHappinessValue, increaseFullnessValue);
+        int coord = getRandomCoord(gameFieldSize, cellSize);
+        Food food = new Food(coord, increaseHappinessValue, increaseFullnessValue);
 
-            while (food.getX() == character.getX() && food.getY() == character.getY()) {
-                coord = getRandomCoord(gameFieldSize, cellSize);
-                food = new Food(coord, increaseHappinessValue, increaseFullnessValue);
-            }
-
-            foodIcon = new ImageIcon(iconFileName);
-            food.setIcon(new ImageIcon(iconFileName));
-            this.food = food;
+        while (food.getX() == character.getX() && food.getY() == character.getY()) {
+            coord = getRandomCoord(gameFieldSize, cellSize);
+            food = new Food(coord, increaseHappinessValue, increaseFullnessValue);
         }
+
+        food.setIcon(new ImageIcon(iconFileName));
+        this.food = food;
     }
 
     @Override
@@ -143,5 +154,26 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
     @Override
     public void setFoodToNull() {
         food = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GameFieldLogic)) return false;
+        GameFieldLogic that = (GameFieldLogic) o;
+        return iconIndex == that.iconIndex &&
+                Objects.equals(character, that.character) &&
+                Objects.equals(food, that.food) &&
+                Objects.equals(toy, that.toy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(character, food, toy, iconIndex);
+    }
+
+    @Override
+    public int getIconIndex() {
+        return iconIndex;
     }
 }

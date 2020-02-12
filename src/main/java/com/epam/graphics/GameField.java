@@ -1,5 +1,6 @@
 package com.epam.graphics;
 
+import com.epam.logic.GameFieldLogic;
 import com.epam.logic.GameFieldLogicInterface;
 import com.epam.models.Age;
 import com.epam.models.GameFieldCharacter;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class GameField extends JPanel implements Serializable {
     private final int SIZE = 280;
@@ -37,6 +39,17 @@ public class GameField extends JPanel implements Serializable {
         setBorder(BorderFactory.createLineBorder(Color.magenta));
 
         this.gameFieldLogic = gameFieldLogic;
+    }
+
+    public GameField(GameField gameField) {
+        this.gameFieldLogic = new GameFieldLogic(gameField.getGameFieldLogic());
+        this.lifeTimer = gameField.getLifeTimer();
+        this.ageTimer = gameField.getAgeTimer();
+        this.characterIsDead = gameField.characterIsDead();
+        this.ripX = gameField.getRipX();
+        this.ripY = gameField.getRipY();
+        this.foodIconFileName = gameField.getFoodIconFileName();
+
     }
 
     public void startTimers(){
@@ -91,6 +104,10 @@ public class GameField extends JPanel implements Serializable {
     public void createCharacter(List<ImageIcon> icons) {
         gameFieldLogic.createCharacter(icons, CELL_SIZE, 3);
         startTimers();
+    }
+
+    public boolean foodExists() {
+        return gameFieldLogic.getFood() != null;
     }
 
     public void createFood(int increaseHappinessValue, int increaseFullnessValue) {
@@ -173,5 +190,47 @@ public class GameField extends JPanel implements Serializable {
         } else if(characterIsDead){
             g.drawImage(RIP.getImage(), ripX, ripY, this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GameField)) return false;
+        GameField gameField = (GameField) o;
+        return characterIsDead == gameField.characterIsDead &&
+                ripX == gameField.ripX &&
+                ripY == gameField.ripY &&
+                Objects.equals(gameFieldLogic, gameField.gameFieldLogic) &&
+                Objects.equals(lifeTimer, gameField.lifeTimer) &&
+                Objects.equals(ageTimer, gameField.ageTimer) &&
+                Objects.equals(foodIconFileName, gameField.foodIconFileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gameFieldLogic, lifeTimer, ageTimer, characterIsDead, ripX, ripY, foodIconFileName);
+    }
+
+    public GameFieldLogicInterface getGameFieldLogic() {
+        return gameFieldLogic;
+    }
+    public Timer getLifeTimer() {
+        return lifeTimer;
+    }
+
+    public Timer getAgeTimer() {
+        return ageTimer;
+    }
+
+    public int getRipX() {
+        return ripX;
+    }
+
+    public int getRipY() {
+        return ripY;
+    }
+
+    public String getFoodIconFileName() {
+        return foodIconFileName;
     }
 }

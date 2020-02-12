@@ -38,4 +38,6 @@ public interface GameFieldLogicInterface {
     void setCharacterToNull();
 
     void setFoodToNull();
+
+    int getIconIndex();
 }

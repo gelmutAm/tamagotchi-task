@@ -3,6 +3,7 @@ package com.epam.models;
 import javax.swing.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class Pet implements GameFieldCharacter, Serializable {
     private final int MIN_HAPPINESS_VALUE = 0;
@@ -24,6 +25,16 @@ public class Pet implements GameFieldCharacter, Serializable {
         happiness = MAX_HAPPINESS_VALUE;
         fullness = MAX_FULLNESS_VALUE;
         age = Age.TEEN;
+    }
+
+    public Pet(Pet pet) {
+        this.x = pet.getX();
+        this.y = pet.getY();
+        this.happiness = pet.getHappiness();
+        this.fullness = pet.getFullness();
+        this.age = pet.getAge();
+        this.currentIcon = pet.getCurrentIcon();
+        this.icons = pet.getIcons();
     }
 
     @Override
@@ -146,5 +157,24 @@ public class Pet implements GameFieldCharacter, Serializable {
 
     public void setIcons(List<ImageIcon> icons) {
         this.icons = icons;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pet)) return false;
+        Pet pet = (Pet) o;
+        return Objects.equals(x, pet.x) &&
+                Objects.equals(y, pet.y) &&
+                Objects.equals(happiness, pet.happiness) &&
+                Objects.equals(fullness, pet.fullness) &&
+                age == pet.age &&
+                Objects.equals(currentIcon, pet.currentIcon) &&
+                Objects.equals(icons, pet.icons);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, happiness, fullness, age, currentIcon, icons);
     }
 }

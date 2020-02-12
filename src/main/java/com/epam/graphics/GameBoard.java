@@ -24,7 +24,7 @@ public class GameBoard extends JPanel implements ActionListener {
     private Button downBtn;
 
     private GameField gameField;
-    //private GameField previousGameField;
+    private GameField previousGameField;
     private JPanel navigationPane;
     private CharSelectionDialog charSelectionDialog;
 
@@ -45,8 +45,12 @@ public class GameBoard extends JPanel implements ActionListener {
         this.gameField.initLifeTimer();
         this.gameField.initAgeTimer();
         this.gameField.startTimers();
-        //gameField = new GameField(new GameFieldLogic());
-        //previousGameField = new GameField(gameField);
+
+        if(gameField.characterExists()) {
+            previousGameField = new GameField(gameField);
+        } else {
+            previousGameField = new GameField(new GameFieldLogic());
+        }
 
         timer.start();
 
@@ -84,8 +88,10 @@ public class GameBoard extends JPanel implements ActionListener {
 
         feedBtn.addActionListener((ActionEvent e) -> {
             if(this.gameField.characterExists()) {
-                this.gameField.createFood(1, 2);
-                this.gameField.repaint();
+                if(!this.gameField.foodExists()) {
+                    this.gameField.createFood(1, 2);
+                    this.gameField.repaint();
+                }
             }
         });
 
@@ -195,10 +201,14 @@ public class GameBoard extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            serializator.serialization(gameField);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        if(!gameField.equals(previousGameField)) {
+            try {
+                serializator.serialization(gameField);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            previousGameField = new GameField(gameField);
         }
     }
 }

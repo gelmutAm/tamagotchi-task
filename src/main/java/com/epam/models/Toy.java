@@ -2,6 +2,7 @@ package com.epam.models;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Toy implements GameFieldToy, Serializable {
     private Integer x;
@@ -34,5 +35,21 @@ public class Toy implements GameFieldToy, Serializable {
     @Override
     public ImageIcon getIcon() {
         return icon;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Toy)) return false;
+        Toy toy = (Toy) o;
+        return Objects.equals(x, toy.x) &&
+                Objects.equals(y, toy.y) &&
+                Objects.equals(increaseHappinessValue, toy.increaseHappinessValue) &&
+                Objects.equals(icon, toy.icon);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, increaseHappinessValue, icon);
     }
 }
