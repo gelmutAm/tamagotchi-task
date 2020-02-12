@@ -29,12 +29,19 @@ public class GameField extends JPanel implements Serializable {
     private int ripX;
     private int ripY;
 
+    private String foodIconFileName;
+
     public GameField(GameFieldLogicInterface gameFieldLogic) {
         setPreferredSize(new Dimension(SIZE, SIZE));
         setBackground(Color.green);
         setBorder(BorderFactory.createLineBorder(Color.magenta));
 
         this.gameFieldLogic = gameFieldLogic;
+    }
+
+    public void startTimers(){
+        lifeTimer.start();
+        ageTimer.start();
     }
 
     public void initLifeTimer() {
@@ -59,15 +66,17 @@ public class GameField extends JPanel implements Serializable {
 
     public void initAgeTimer() {
         ageTimer.addActionListener((ActionEvent e) -> {
-            if (gameFieldLogic.getCharacter().getAge() == Age.ELDERLY) {
-                allToStart(gameFieldLogic.getCharacter());
-            }
+            if(gameFieldLogic.getCharacter() != null) {
+                if (gameFieldLogic.getCharacter().getAge() == Age.ELDERLY) {
+                    allToStart(gameFieldLogic.getCharacter());
+                }
 
-            if (gameFieldLogic.getCharacter() != null) {
-                gameFieldLogic.changeAge();
-            }
+                if (gameFieldLogic.getCharacter() != null) {
+                    gameFieldLogic.changeAge();
+                }
 
-            repaint();
+                repaint();
+            }
         });
     }
 
@@ -81,12 +90,11 @@ public class GameField extends JPanel implements Serializable {
 
     public void createCharacter(List<ImageIcon> icons) {
         gameFieldLogic.createCharacter(icons, CELL_SIZE, 3);
-        lifeTimer.start();
-        ageTimer.start();
+        startTimers();
     }
 
-    public void createFood(String iconFileName, int increaseHappinessValue, int increaseFullnessValue) {
-        gameFieldLogic.createFood(iconFileName,
+    public void createFood(int increaseHappinessValue, int increaseFullnessValue) {
+        gameFieldLogic.createFood(foodIconFileName,
                 increaseHappinessValue,
                 increaseFullnessValue,
                 SIZE,
@@ -126,6 +134,10 @@ public class GameField extends JPanel implements Serializable {
         gameFieldLogic.setCharacterToNull();
         gameFieldLogic.setFoodToNull();
         characterIsDead = true;
+    }
+
+    public void setFoodIconFileName(String fileName) {
+        foodIconFileName = fileName;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.epam.graphics;
 
+import com.epam.logic.GameFieldLogic;
 import com.epam.serialization.Serializator;
 
 import javax.swing.*;
@@ -43,8 +44,11 @@ public class GameBoard extends JPanel implements ActionListener {
         this.gameField = gameField;
         this.gameField.initLifeTimer();
         this.gameField.initAgeTimer();
+        this.gameField.startTimers();
         //gameField = new GameField(new GameFieldLogic());
         //previousGameField = new GameField(gameField);
+
+        timer.start();
 
         JPanel navigationPane = new JPanel();
         navigationPane.setBackground(Color.pink);
@@ -61,25 +65,27 @@ public class GameBoard extends JPanel implements ActionListener {
         add(this.navigationPane);
 
         createBtn.addActionListener((ActionEvent e) -> {
-            if(!gameField.characterExists() && !gameField.characterIsDead()) {
+            if(!this.gameField.characterExists() && !this.gameField.characterIsDead()) {
                 charSelectionDialog = new CharSelectionDialog();
                 petIcons = charSelectionDialog.getCharacterIcons();
                 foodIconFileName = charSelectionDialog.getFoodIconFileName();
                 toyIconFileName = charSelectionDialog.getToyIconFileName();
 
+                this.gameField.setFoodIconFileName(foodIconFileName);
+
                 if(petIcons != null) {
-                    gameField.createCharacter(petIcons);
-                    gameField.repaint();
+                    this.gameField.createCharacter(petIcons);
+                    this.gameField.repaint();
                 }
-            }else if(gameField.characterIsDead()){
+            }else if(this.gameField.characterIsDead()){
                 new CreationDialog(creationMessage);
             }
         });
 
         feedBtn.addActionListener((ActionEvent e) -> {
-            if(gameField.characterExists()) {
-                gameField.createFood(charSelectionDialog.getFoodIconFileName(), 1, 2);
-                gameField.repaint();
+            if(this.gameField.characterExists()) {
+                this.gameField.createFood(1, 2);
+                this.gameField.repaint();
             }
         });
 
@@ -91,34 +97,34 @@ public class GameBoard extends JPanel implements ActionListener {
         });
 
         upBtn.addActionListener((ActionEvent e) -> {
-            if(gameField.characterExists()) {
-                gameField.moveUp();
-                gameField.feed();
-                gameField.repaint();
+            if(this.gameField.characterExists()) {
+                this.gameField.moveUp();
+                this.gameField.feed();
+                this.gameField.repaint();
             }
         });
 
         downBtn.addActionListener((ActionEvent e) -> {
-            if(gameField.characterExists()) {
-                gameField.moveDown();
-                gameField.feed();
-                gameField.repaint();
+            if(this.gameField.characterExists()) {
+                this.gameField.moveDown();
+                this.gameField.feed();
+                this.gameField.repaint();
             }
         });
 
         leftBtn.addActionListener((ActionEvent e) -> {
-            if(gameField.characterExists()) {
-                gameField.moveLeft();
-                gameField.feed();
-                gameField.repaint();
+            if(this.gameField.characterExists()) {
+                this.gameField.moveLeft();
+                this.gameField.feed();
+                this.gameField.repaint();
             }
         });
 
         rightBtn.addActionListener((ActionEvent e) -> {
-            if(gameField.characterExists()) {
-                gameField.moveRight();
-                gameField.feed();
-                gameField.repaint();
+            if(this.gameField.characterExists()) {
+                this.gameField.moveRight();
+                this.gameField.feed();
+                this.gameField.repaint();
             }
         });
     }
@@ -189,10 +195,10 @@ public class GameBoard extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*try {
+        try {
             serializator.serialization(gameField);
         } catch (IOException e1) {
             e1.printStackTrace();
-        }*/
+        }
     }
 }

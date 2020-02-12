@@ -14,6 +14,7 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
     private GameFieldToy toy;
 
     private int iconIndex = 0;
+    private ImageIcon foodIcon;
 
     @Override
     public GameFieldCharacter getCharacter() {
@@ -57,6 +58,7 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
                 food = new Food(coord, increaseHappinessValue, increaseFullnessValue);
             }
 
+            foodIcon = new ImageIcon(iconFileName);
             food.setIcon(new ImageIcon(iconFileName));
             this.food = food;
         }
@@ -135,6 +137,7 @@ public class GameFieldLogic implements GameFieldLogicInterface, Serializable {
     @Override
     public void setCharacterToNull() {
         character = null;
+        iconIndex = 0;
     }
 
     @Override
