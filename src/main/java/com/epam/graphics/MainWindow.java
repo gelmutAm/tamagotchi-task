@@ -6,6 +6,7 @@ import com.epam.serialization.Serializator;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class MainWindow extends JFrame {
 
@@ -30,7 +31,7 @@ public class MainWindow extends JFrame {
 
         if(file.exists()) {
             GameField gameField = serializator.deserialization("gamefield.data");
-            gameBoard = new GameBoard(gameField);
+            gameBoard = new GameBoard(gameField.recount(new Date()));
         } else {
             gameBoard = new GameBoard(new GameField(new GameFieldLogic()));
         }

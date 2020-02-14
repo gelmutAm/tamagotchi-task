@@ -41,5 +41,5 @@ public interface GameFieldCharacter {
 
     void reduceIndicators(int happinessValue, int fullnessValue);
 
-    public void changeAge(ImageIcon icon);
+    void changeAge(ImageIcon icon);
 }

@@ -31,7 +31,7 @@ public interface GameFieldLogicInterface {
 
     void reduceIndicators(int happinessValue, int fullnessValue);
 
-    public void changeAge();
+    void changeAge();
 
     void play(String iconFileName, int increaseHappinessValue, int gameFieldSize, int cellSize);
 

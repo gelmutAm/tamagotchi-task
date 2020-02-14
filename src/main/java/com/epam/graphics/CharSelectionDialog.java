@@ -22,27 +22,29 @@ public class CharSelectionDialog extends JDialog {
         setLocation(500, 200);
         add(getSelectionPane());
 
+        String path = "src/main/resources/images/";
+
         dogBtn.addActionListener((ActionEvent e) -> {
             List<String> list = new ArrayList<>();
-            list.add("dog_teen.png");
-            list.add("dog_adult.png");
-            list.add("dog_elderly.png");
+            list.add(path + "dog_teen.png");
+            list.add(path + "dog_adult.png");
+            list.add(path + "dog_elderly.png");
 
             characterIcons = getIcons(list);
-            foodIconFileName = "bone.png";
-            toyIconFileName = "ball.png";
+            foodIconFileName = path + "bone.png";
+            toyIconFileName = path + "ball.png";
             this.dispose();
         });
 
         catBtn.addActionListener((ActionEvent e) -> {
             List<String> list = new ArrayList<>();
-            list.add("cat_teen.png");
-            list.add("cat_adult.png");
-            list.add("cat_elderly.png");
+            list.add(path + "cat_teen.png");
+            list.add(path + "cat_adult.png");
+            list.add(path + "cat_elderly.png");
 
             characterIcons = getIcons(list);
-            foodIconFileName = "chicken.png";
-            toyIconFileName = "bow.png";
+            foodIconFileName = path + "fish.png";
+            toyIconFileName = path + "bow.png";
             this.dispose();
         });
 

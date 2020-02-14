@@ -11,7 +11,6 @@ import java.util.List;
 import java.io.IOException;
 
 public class GameBoard extends JPanel implements ActionListener {
-    private final int NAV_BTN_SIZE = 40;
     private final int DELAY = 1000;
 
     private Button createBtn;
@@ -25,7 +24,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
     private GameField gameField;
     private GameField previousGameField;
-    private JPanel navigationPane;
+
     private CharSelectionDialog charSelectionDialog;
 
     private List<ImageIcon> petIcons;
@@ -34,8 +33,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
     private String creationMessage = "You can't create a pet. Please wait.";
 
-    Serializator serializator = new Serializator();
-    Timer timer = new Timer(DELAY, this);
+    private Serializator serializator = new Serializator();
 
 
     public GameBoard(GameField gameField) {
@@ -52,6 +50,7 @@ public class GameBoard extends JPanel implements ActionListener {
             previousGameField = new GameField(new GameFieldLogic());
         }
 
+        Timer timer = new Timer(DELAY, this);
         timer.start();
 
         JPanel navigationPane = new JPanel();
@@ -62,11 +61,9 @@ public class GameBoard extends JPanel implements ActionListener {
         navigationPane.add(Box.createRigidArea(new Dimension(0, 20)));
         navigationPane.add(getNavigationButtonsPane());
 
-        this.navigationPane = navigationPane;
-
         add(gameField, BorderLayout.CENTER);
         add(Box.createRigidArea(new Dimension(10, 0)));
-        add(this.navigationPane);
+        add(navigationPane);
 
         createBtn.addActionListener((ActionEvent e) -> {
             if(!this.gameField.characterExists() && !this.gameField.characterIsDead()) {
@@ -165,6 +162,7 @@ public class GameBoard extends JPanel implements ActionListener {
         upPane.setBackground(Color.pink);
 
         upBtn = new Button("up");
+        int NAV_BTN_SIZE = 40;
         upBtn.setPreferredSize(new Dimension(NAV_BTN_SIZE, NAV_BTN_SIZE));
         upBtn.setBackground(Color.yellow);
         upPane.add(upBtn);
