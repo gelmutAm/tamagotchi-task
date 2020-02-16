@@ -3,7 +3,7 @@ Tamagotchi game.
 
 # Installation
 JDK 8 or higher must be installed.
-Clone this repository on machine then start up IDE, open this project and run it.
+Clone this repository on machine then start up IDE, open this project, find package "graphics" and run "MainWindow.java" main.
 
 # How to play
 
