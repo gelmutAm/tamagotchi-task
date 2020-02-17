@@ -124,13 +124,6 @@ public class Pet implements GameFieldCharacter, Serializable {
     }
 
     @Override
-    public void play(int increaseHappinessValue) {
-        if(happiness <= MAX_HAPPINESS_VALUE - increaseHappinessValue) {
-            happiness += increaseHappinessValue;
-        }
-    }
-
-    @Override
     public void reduceIndicators(int happinessValue, int fullnessValue) {
         if(happiness > MIN_HAPPINESS_VALUE) {
             happiness -= happinessValue;

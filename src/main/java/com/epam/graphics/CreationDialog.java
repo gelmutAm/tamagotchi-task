@@ -10,7 +10,7 @@ public class CreationDialog extends JDialog {
         setTitle("Message");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(new Dimension(400, 200));
-        setLocation(500, 200);
+        setLocationRelativeTo(null);
         add(getPane(message));
 
         setVisible(true);

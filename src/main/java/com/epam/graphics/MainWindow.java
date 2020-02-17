@@ -17,8 +17,8 @@ public class MainWindow extends JFrame {
 
         setTitle("Tamagotchi");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(500, 320);
-        setLocation(500, 200);
+        setSize(500, 330);
+        setLocationRelativeTo(null);
         add(this.gameBoard);
         setVisible(true);
         setResizable(false);

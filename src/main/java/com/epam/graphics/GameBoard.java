@@ -15,7 +15,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
     private Button createBtn;
     private Button feedBtn;
-    private Button playBtn;
 
     private Button upBtn;
     private Button leftBtn;
@@ -29,7 +28,6 @@ public class GameBoard extends JPanel implements ActionListener {
 
     private List<ImageIcon> petIcons;
     private String foodIconFileName;
-    private String toyIconFileName;
 
     private String creationMessage = "You can't create a pet. Please wait.";
 
@@ -44,8 +42,8 @@ public class GameBoard extends JPanel implements ActionListener {
         this.gameField.initAgeTimer();
         this.gameField.startTimers();
 
-        if(gameField.characterExists()) {
-            previousGameField = new GameField(gameField);
+        if(this.gameField.characterExists()) {
+            previousGameField = new GameField(this.gameField);
         } else {
             previousGameField = new GameField(new GameFieldLogic());
         }
@@ -61,7 +59,7 @@ public class GameBoard extends JPanel implements ActionListener {
         navigationPane.add(Box.createRigidArea(new Dimension(0, 20)));
         navigationPane.add(getNavigationButtonsPane());
 
-        add(gameField, BorderLayout.CENTER);
+        add(this.gameField, BorderLayout.CENTER);
         add(Box.createRigidArea(new Dimension(10, 0)));
         add(navigationPane);
 
@@ -70,7 +68,6 @@ public class GameBoard extends JPanel implements ActionListener {
                 charSelectionDialog = new CharSelectionDialog();
                 petIcons = charSelectionDialog.getCharacterIcons();
                 foodIconFileName = charSelectionDialog.getFoodIconFileName();
-                toyIconFileName = charSelectionDialog.getToyIconFileName();
 
                 this.gameField.setFoodIconFileName(foodIconFileName);
 
@@ -90,13 +87,6 @@ public class GameBoard extends JPanel implements ActionListener {
                     this.gameField.repaint();
                 }
             }
-        });
-
-        playBtn.addActionListener((ActionEvent e) -> {
-            /*for(int i = 0; i < 5; i++) {
-                gameField.play(charSelectionDialog.getToyIconFileName(), 2);
-                gameField.repaint();
-            }*/
         });
 
         upBtn.addActionListener((ActionEvent e) -> {
@@ -141,14 +131,10 @@ public class GameBoard extends JPanel implements ActionListener {
         createBtn.setBackground(Color.yellow);
         feedBtn = new Button("feed");
         feedBtn.setBackground(Color.yellow);
-        playBtn = new Button("play");
-        playBtn.setBackground(Color.yellow);
 
         mainButtonsPane.add(createBtn);
         mainButtonsPane.add(Box.createRigidArea(new Dimension(0, 10)));
         mainButtonsPane.add(feedBtn);
-        mainButtonsPane.add(Box.createRigidArea(new Dimension(0, 10)));
-        mainButtonsPane.add(playBtn);
 
         return mainButtonsPane;
     }

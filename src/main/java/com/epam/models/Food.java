@@ -11,9 +11,7 @@ public class Food implements GameFieldFood, Serializable {
     private Integer increaseFullnessValue;
     private ImageIcon icon;
 
-    public Food(int coord, int increaseHappinessValue, int increaseFullnessValue) {
-        x = coord;
-        y = coord;
+    public Food(int increaseHappinessValue, int increaseFullnessValue) {
         this.increaseHappinessValue = increaseHappinessValue;
         this.increaseFullnessValue = increaseFullnessValue;
     }
@@ -22,8 +20,16 @@ public class Food implements GameFieldFood, Serializable {
         return x;
     }
 
+    public void setX(int value) {
+        x = value;
+    }
+
     public int getY() {
         return y;
+    }
+
+    public void setY(int value) {
+        y = value;
     }
 
     public int getIncreaseHappinessValue() {

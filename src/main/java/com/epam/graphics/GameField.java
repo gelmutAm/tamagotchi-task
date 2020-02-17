@@ -5,7 +5,6 @@ import com.epam.logic.GameFieldLogicInterface;
 import com.epam.models.Age;
 import com.epam.models.GameFieldCharacter;
 import com.epam.models.GameFieldFood;
-import com.epam.models.GameFieldToy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,11 +19,13 @@ public class GameField extends JPanel implements Serializable {
     private final int CELL_SIZE = 35;
     private final int MIN_COORD = 0;
     private final int MAX_COORD = SIZE - CELL_SIZE;
-    private int LIFE_DELAY = 60000;
-    private final int TEMP_LIFE_DELAY = LIFE_DELAY;
-    private final int AGE_DELAY = 120000;
-    private final int RIP_DELAY = 30000;
+    private final int TEMP_LIFE_DELAY = 60 * 1000 * 2;
+    private final int TEMP_AGE_DELAY = TEMP_LIFE_DELAY * 2;
+    private final int RIP_DELAY = 60 * 1000 / 2;
     private final ImageIcon RIP = new ImageIcon("src/main/resources/images/rip.png");
+
+    private int LIFE_DELAY = TEMP_LIFE_DELAY;
+    private int AGE_DELAY = TEMP_AGE_DELAY;
 
     private GameFieldLogicInterface gameFieldLogic;
 
@@ -56,12 +57,57 @@ public class GameField extends JPanel implements Serializable {
         this.characterIsDead = gameField.characterIsDead();
         this.ripX = gameField.getRipX();
         this.ripY = gameField.getRipY();
+        this.creationDate = gameField.getCreationDate();
+        this.lastChanged = gameField.getLastChanged();
         this.foodIconFileName = gameField.getFoodIconFileName();
+    }
+
+    public GameFieldLogicInterface getGameFieldLogic() {
+        return gameFieldLogic;
+    }
+
+    public Timer getLifeTimer() {
+        return lifeTimer;
+    }
+
+    public Timer getAgeTimer() {
+        return ageTimer;
+    }
+
+    public int getRipX() {
+        return ripX;
+    }
+
+    public int getRipY() {
+        return ripY;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public Date getLastChanged() {
+        return lastChanged;
+    }
+
+    public String getFoodIconFileName() {
+        return foodIconFileName;
+    }
+
+    public void setFoodIconFileName(String fileName) {
+        foodIconFileName = fileName;
     }
 
     public void startTimers(){
         lifeTimer.start();
         ageTimer.start();
+    }
+
+    public void setDelaysToStart() {
+        lifeTimer.setInitialDelay(TEMP_LIFE_DELAY);
+        lifeTimer.setDelay(TEMP_LIFE_DELAY);
+        ageTimer.setInitialDelay(TEMP_AGE_DELAY);
+        ageTimer.setDelay(TEMP_AGE_DELAY);
     }
 
     public void initLifeTimer() {
@@ -72,13 +118,21 @@ public class GameField extends JPanel implements Serializable {
                 if (character.getFullness() > character.getFullnessMin() + subtractedFullnessValue) {
                     gameFieldLogic.reduceIndicators(subtractedHappinessValue, subtractedFullnessValue);
                     lastChanged = new Date();
+                    LIFE_DELAY = TEMP_LIFE_DELAY;
+                    lifeTimer.setInitialDelay(LIFE_DELAY);
+                    lifeTimer.setDelay(LIFE_DELAY);
+                    lifeTimer.restart();
                 } else {
                     allToStart(character);
+                    ageTimer.stop();
                     LIFE_DELAY = RIP_DELAY;
+                    lifeTimer.setInitialDelay(LIFE_DELAY);
+                    lifeTimer.setDelay(LIFE_DELAY);
+                    lifeTimer.restart();
                 }
             } else {
                 characterIsDead = false;
-                LIFE_DELAY = TEMP_LIFE_DELAY;
+                setDelaysToStart();
             }
 
             repaint();
@@ -90,15 +144,27 @@ public class GameField extends JPanel implements Serializable {
             if(gameFieldLogic.getCharacter() != null) {
                 if (gameFieldLogic.getCharacter().getAge() == Age.ELDERLY) {
                     allToStart(gameFieldLogic.getCharacter());
+                    lifeTimer.stop();
+                    AGE_DELAY = RIP_DELAY;
+                    ageTimer.setInitialDelay(AGE_DELAY);
+                    ageTimer.setDelay(AGE_DELAY);
+                    ageTimer.restart();
                 }
 
                 if (gameFieldLogic.getCharacter() != null) {
                     gameFieldLogic.changeAge();
                     creationDate = new Date();
+                    AGE_DELAY = TEMP_AGE_DELAY;
+                    ageTimer.setInitialDelay(AGE_DELAY);
+                    ageTimer.setDelay(AGE_DELAY);
+                    ageTimer.restart();
                 }
-
-                repaint();
+            } else {
+                characterIsDead = false;
+                setDelaysToStart();
             }
+
+            repaint();
         });
     }
 
@@ -114,7 +180,9 @@ public class GameField extends JPanel implements Serializable {
         gameFieldLogic.createCharacter(icons, CELL_SIZE, 3);
         creationDate = new Date();
         lastChanged = new Date();
-        startTimers();
+        setDelaysToStart();
+        lifeTimer.restart();
+        ageTimer.restart();
     }
 
     public boolean foodExists() {
@@ -149,12 +217,10 @@ public class GameField extends JPanel implements Serializable {
     public void feed() {
         if(gameFieldLogic.feed()) {
             lastChanged = new Date();
+            lifeTimer.setInitialDelay(TEMP_LIFE_DELAY);
+            lifeTimer.setDelay(TEMP_LIFE_DELAY);
             lifeTimer.restart();
         }
-    }
-
-    public void play(String iconFileName, int increaseHappinessValue) {
-        gameFieldLogic.play(iconFileName, increaseHappinessValue, SIZE, CELL_SIZE);
     }
 
     private void allToStart(GameFieldCharacter character) {
@@ -165,45 +231,58 @@ public class GameField extends JPanel implements Serializable {
         characterIsDead = true;
     }
 
-    public void setFoodIconFileName(String fileName) {
-        foodIconFileName = fileName;
-    }
-
     public GameField recount(Date callDate) {
         if(gameFieldLogic.getCharacter() != null) {
             GameFieldCharacter character = gameFieldLogic.getCharacter();
 
             int maxLifeTicksCount = character.getFullness() / subtractedFullnessValue;
-            int maxLifeDelay = maxLifeTicksCount * LIFE_DELAY;
+            int maxLifeDelay = maxLifeTicksCount * TEMP_LIFE_DELAY;
             long lifePassedTime = callDate.getTime() - lastChanged.getTime();
             long agePassedTime = callDate.getTime() - creationDate.getTime();
 
             if (lifePassedTime >= maxLifeDelay) {
                 allToStart(character);
+                lifeTimer.setInitialDelay(RIP_DELAY);
+                lifeTimer.setDelay(RIP_DELAY);
                 return this;
             } else {
-                long ageTicksNumber = agePassedTime / AGE_DELAY;
+                long ageTicksNumber = agePassedTime / TEMP_AGE_DELAY;
 
                 if(ageTicksNumber >= 1 && character.getAge() == Age.ELDERLY) {
                     allToStart(character);
+                    lifeTimer.setInitialDelay(RIP_DELAY);
+                    lifeTimer.setDelay(RIP_DELAY);
                 } else {
-                    long lifeTicksNumber = lifePassedTime / LIFE_DELAY;
+                    long lifeTicksNumber = lifePassedTime / TEMP_LIFE_DELAY;
 
                     for (int i = 0; i < lifeTicksNumber; i++) {
                         gameFieldLogic.reduceIndicators(subtractedHappinessValue, subtractedFullnessValue);
                     }
 
+                    if(lifeTicksNumber == 0) {
+                        LIFE_DELAY -= lifePassedTime;
+                        lifeTimer.setInitialDelay(LIFE_DELAY);
+                        lifeTimer.setDelay(LIFE_DELAY);
+                        LIFE_DELAY = TEMP_LIFE_DELAY;
+                    }
+
                     for(int i = 0; i < ageTicksNumber; i++) {
                         gameFieldLogic.changeAge();
+                    }
+
+                    if(ageTicksNumber == 0) {
+                        AGE_DELAY -= agePassedTime;
+                        ageTimer.setInitialDelay(AGE_DELAY);
+                        ageTimer.setDelay(AGE_DELAY);
+                        AGE_DELAY = TEMP_AGE_DELAY;
                     }
                 }
 
                 if (character.getFullness() == character.getFullnessMin()) {
                     allToStart(gameFieldLogic.getCharacter());
+                    lifeTimer.setInitialDelay(RIP_DELAY);
+                    lifeTimer.setDelay(RIP_DELAY);
                 }
-
-                creationDate = new Date();
-                lastChanged = new Date();
 
                 return this;
             }
@@ -231,14 +310,6 @@ public class GameField extends JPanel implements Serializable {
                 g.drawImage(foodIcon, foodX, foodY, this);
             }
 
-            if(gameFieldLogic.getToy() != null) {
-                GameFieldToy toy = gameFieldLogic.getToy();
-                Image toyIcon = toy.getIcon().getImage();
-                int toyX = toy.getX();
-                int toyY = toy.getY();
-                g.drawImage(toyIcon, toyX, toyY, this);
-            }
-
             g.drawString("happiness: " + character.getHappiness(), 5, 15);
             g.drawString("fullness: " + character.getFullness(), 5, 30);
             g.drawString("age: " + character.getAge(), 5, 45);
@@ -252,40 +323,36 @@ public class GameField extends JPanel implements Serializable {
         if (this == o) return true;
         if (!(o instanceof GameField)) return false;
         GameField gameField = (GameField) o;
-        return characterIsDead == gameField.characterIsDead &&
+        return LIFE_DELAY == gameField.LIFE_DELAY &&
+                AGE_DELAY == gameField.AGE_DELAY &&
+                characterIsDead == gameField.characterIsDead &&
                 ripX == gameField.ripX &&
                 ripY == gameField.ripY &&
+                subtractedHappinessValue == gameField.subtractedHappinessValue &&
+                subtractedFullnessValue == gameField.subtractedFullnessValue &&
                 Objects.equals(gameFieldLogic, gameField.gameFieldLogic) &&
                 Objects.equals(lifeTimer, gameField.lifeTimer) &&
                 Objects.equals(ageTimer, gameField.ageTimer) &&
+                Objects.equals(creationDate, gameField.creationDate) &&
+                Objects.equals(lastChanged, gameField.lastChanged) &&
                 Objects.equals(foodIconFileName, gameField.foodIconFileName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameFieldLogic, lifeTimer, ageTimer, characterIsDead, ripX, ripY, foodIconFileName);
-    }
-
-    public GameFieldLogicInterface getGameFieldLogic() {
-        return gameFieldLogic;
-    }
-    public Timer getLifeTimer() {
-        return lifeTimer;
-    }
-
-    public Timer getAgeTimer() {
-        return ageTimer;
-    }
-
-    public int getRipX() {
-        return ripX;
-    }
-
-    public int getRipY() {
-        return ripY;
-    }
-
-    public String getFoodIconFileName() {
-        return foodIconFileName;
+        return Objects.hash(
+                LIFE_DELAY,
+                AGE_DELAY,
+                gameFieldLogic,
+                lifeTimer,
+                ageTimer,
+                characterIsDead,
+                ripX,
+                ripY,
+                creationDate,
+                lastChanged,
+                subtractedHappinessValue,
+                subtractedFullnessValue,
+                foodIconFileName);
     }
 }

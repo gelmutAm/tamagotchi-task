@@ -9,7 +9,6 @@ import java.util.List;
 public class CharSelectionDialog extends JDialog {
     private List<ImageIcon> characterIcons;
     private String foodIconFileName;
-    private String toyIconFileName;
 
     private Button dogBtn;
     private Button catBtn;
@@ -19,7 +18,7 @@ public class CharSelectionDialog extends JDialog {
         setTitle("Select a pet");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(new Dimension(400, 200));
-        setLocation(500, 200);
+        setLocationRelativeTo(null);
         add(getSelectionPane());
 
         String path = "src/main/resources/images/";
@@ -32,7 +31,6 @@ public class CharSelectionDialog extends JDialog {
 
             characterIcons = getIcons(list);
             foodIconFileName = path + "bone.png";
-            toyIconFileName = path + "ball.png";
             this.dispose();
         });
 
@@ -44,12 +42,29 @@ public class CharSelectionDialog extends JDialog {
 
             characterIcons = getIcons(list);
             foodIconFileName = path + "fish.png";
-            toyIconFileName = path + "bow.png";
             this.dispose();
         });
 
         setVisible(true);
         setResizable(false);
+    }
+
+    public List<ImageIcon> getCharacterIcons() {
+        return characterIcons;
+    }
+
+    public String getFoodIconFileName() {
+        return foodIconFileName;
+    }
+
+    private List<ImageIcon> getIcons(List<String> fileNames) {
+        List<ImageIcon> result = new ArrayList<>();
+
+        for(String item : fileNames) {
+            result.add(new ImageIcon(item));
+        }
+
+        return result;
     }
 
     public JPanel getSelectionPane() {
@@ -74,27 +89,5 @@ public class CharSelectionDialog extends JDialog {
         selectionPane.add(buttonsPane, BorderLayout.CENTER);
 
         return selectionPane;
-    }
-
-    public List<ImageIcon> getCharacterIcons() {
-        return characterIcons;
-    }
-
-    public String getFoodIconFileName() {
-        return foodIconFileName;
-    }
-
-    public String getToyIconFileName() {
-        return toyIconFileName;
-    }
-
-    private List<ImageIcon> getIcons(List<String> fileNames) {
-        List<ImageIcon> result = new ArrayList<>();
-
-        for(String item : fileNames) {
-            result.add(new ImageIcon(item));
-        }
-
-        return result;
     }
 }

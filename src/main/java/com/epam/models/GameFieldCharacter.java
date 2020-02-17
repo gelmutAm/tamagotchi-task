@@ -37,8 +37,6 @@ public interface GameFieldCharacter {
 
     void eat(int increaseHappinessValue, int increaseFullnessValue);
 
-    void play(int increaseHappinessValue);
-
     void reduceIndicators(int happinessValue, int fullnessValue);
 
     void changeAge(ImageIcon icon);
