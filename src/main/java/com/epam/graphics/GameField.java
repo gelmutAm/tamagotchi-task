@@ -19,8 +19,8 @@ public class GameField extends JPanel implements Serializable {
     private final int CELL_SIZE = 35;
     private final int MIN_COORD = 0;
     private final int MAX_COORD = SIZE - CELL_SIZE;
-    private final int TEMP_LIFE_DELAY = 60 * 1000 * 2;
-    private final int TEMP_AGE_DELAY = TEMP_LIFE_DELAY * 2;
+    private final int TEMP_LIFE_DELAY = 60 * 1000 * 60;
+    private final int TEMP_AGE_DELAY = TEMP_LIFE_DELAY * 10;
     private final int RIP_DELAY = 60 * 1000 / 2;
     private final ImageIcon RIP = new ImageIcon("src/main/resources/images/rip.png");
 
